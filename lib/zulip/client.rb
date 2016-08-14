@@ -17,9 +17,8 @@ module Zulip
     include Zulip::Client::EventStreaming
     include Zulip::Client::EventParser
 
-    attr_accessor :email_address, :api_key
+    attr_accessor :email_address, :api_key, :endpoint
     attr_writer :connection
-    ENDPOINT = "https://api.zulip.com"
 
     def initialize
       yield self if block_given?
@@ -32,7 +31,8 @@ module Zulip
     private
 
     def initialize_connection
-      conn = Faraday.new(url: ENDPOINT)
+      ep = endpoint || "https://zulipchat.com"
+      conn = Faraday.new(url: ep)
       conn.basic_auth(email_address, api_key)
       conn
     end
